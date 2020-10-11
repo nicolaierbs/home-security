@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 import detector
+import ip
 
 
 def configure_logger():
@@ -47,22 +48,18 @@ def take_images():
         time.sleep(1)
         if captured:
             log.debug('Image captured')
-
-            people_detected = detector.detect_people(img)
-            faces_detected = detector.detect_faces(img)
-            if people_detected or faces_detected:
-                log.info('Detected ' + str(detector.detect_people(img)) + ' people and ' +
-                         str(detector.detect_faces(img)) + ' faces')
-
             path = hierarchical_file(datetime.now())
-            log.info(path)
-            # save image
-            cv2.imwrite(path, resize_image(img, 0.5))
+            if detector.detect_faces(img) or detector.detect_people(img):
+                log.info('Detected people')
+                cv2.imwrite(path, img)
+            else:
+                cv2.imwrite(path, resize_image(img, 0.5))
         else:
             log.error('No image captured')
 
 
 log = configure_logger()
+log.info(ip.ip())
 log.info('Started camera_capturer')
 take_images()
 
