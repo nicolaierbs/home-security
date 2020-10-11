@@ -3,10 +3,11 @@ import logging
 import time
 from datetime import datetime
 from pathlib import Path
+import detector
 
 
 def configure_logger():
-    logger = logging.getLogger('simple_logger')
+    logger = logging.getLogger('standard_logger')
     logger.setLevel(logging.DEBUG)
     # create file handler which logs even debug messages
     fh = logging.FileHandler('debug.log')
@@ -30,6 +31,12 @@ def hierarchical_file(date):
     return path + str(int(date.timestamp())) + '.jpg'
 
 
+def resize_image(img, scaling):
+    width = int(img.shape[1] * scaling)
+    height = int(img.shape[0] * scaling)
+    return cv2.resize(img, (width, height), interpolation=cv2.INTER_AREA)
+
+
 def take_images():
     # initialize the camera
     cam = cv2.VideoCapture(0)   # 0 -> index of camera
@@ -40,15 +47,17 @@ def take_images():
         time.sleep(1)
         if captured:
             log.debug('Image captured')
-            # cv2.namedWindow("cam-test", cv2.WINDOW_AUTOSIZE)
-            # cv2.imshow("cam-test", img)
-            # cv2.waitKey(0)
-            # cv2.destroyWindow("cam-test")
+
+            people_detected = detector.detect_people(img)
+            faces_detected = detector.detect_faces(img)
+            if people_detected or faces_detected:
+                log.info('Detected ' + str(detector.detect_people(img)) + ' people and ' +
+                         str(detector.detect_faces(img)) + ' faces')
 
             path = hierarchical_file(datetime.now())
             log.info(path)
             # save image
-            cv2.imwrite(path, img)
+            cv2.imwrite(path, resize_image(img, 0.5))
         else:
             log.error('No image captured')
 
