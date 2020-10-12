@@ -12,6 +12,8 @@ params = configparser.ConfigParser()
 params.read('parameters.ini')
 
 image_path = params.get(config_section, 'path')
+no_people_scale_factor = params.getfloat(config_section, 'no_people_scale_factor')
+people_scale_factor = params.getfloat(config_section, 'people_scale_factor')
 
 
 def configure_logger():
@@ -66,8 +68,11 @@ def take_images():
 
 
 log = configure_logger()
-log.info(ip.ip())
 log.info('Started camera_capturer')
-take_images()
-
+while True:
+    try:
+        take_images()
+    except Exception as e:
+        logging.error(e.message)
+    time.sleep(10)
 log.info('End camera-capturer')
