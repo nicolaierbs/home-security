@@ -63,7 +63,7 @@ def take_images():
             if detector.detect_faces(img) or detector.detect_people(img):
                 log.info('Detected people')
                 cv2.imwrite(path, resize_image(img, people_scale_factor))
-            elif bool(random.getrandbits(1)):
+            elif random.random() > 0.5:
                 cv2.imwrite(path, resize_image(img, no_people_scale_factor))
         else:
             log.error('No image captured')
