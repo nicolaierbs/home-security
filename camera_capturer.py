@@ -60,9 +60,9 @@ def take_images():
             path = hierarchical_file(datetime.now())
             if detector.detect_faces(img) or detector.detect_people(img):
                 log.info('Detected people')
-                cv2.imwrite(path, img)
+                cv2.imwrite(path, resize_image(img, people_scale_factor))
             else:
-                cv2.imwrite(path, resize_image(img, 0.5))
+                cv2.imwrite(path, resize_image(img, no_people_scale_factor))
         else:
             log.error('No image captured')
 
