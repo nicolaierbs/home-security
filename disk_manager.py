@@ -33,8 +33,9 @@ def image_count(path):
 
 def main():
     twilio_connector.send_whatsapp(
-        '[IP] ' + ip.ip() + ' [Disk] ' + get_disk_space() + ' [Images] '
-        + str(image_count(image_path)) + '/' + path_size(image_path))
+        'Your ' + ip.ip() + ' order of ' + get_disk_space()
+        + ' has shipped and should be delivered on '
+        + str(image_count(image_path)) + '. Details: ' + path_size(image_path))
 
 
 if __name__ == "__main__":
