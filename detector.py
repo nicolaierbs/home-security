@@ -6,16 +6,16 @@ import numpy as np
 hog = cv2.HOGDescriptor()
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
+# eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 
 
 def detect_faces(img):
     # Convert into grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # Detect faces
-    if len(eye_cascade.detectMultiScale(gray, 1.1, 4)):
-        return True
-    elif len(face_cascade.detectMultiScale(gray, 1.1, 4)):
+    # if len(eye_cascade.detectMultiScale(gray, 1.1, 4)):
+    #     return True
+    if len(face_cascade.detectMultiScale(gray, 1.1, 4)):
         return True
     else:
         return False
