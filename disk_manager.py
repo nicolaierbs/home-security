@@ -13,7 +13,7 @@ image_path = params.get(config_section, 'path')
 
 
 def get_disk_space():
-    total, used, free = shutil.disk_usage("/")
+    total, used, free = shutil.disk_usage(image_path)
     return str(free // (2**30)) + 'GB/' + str(total // (2**30)) + 'GB'
 
 
