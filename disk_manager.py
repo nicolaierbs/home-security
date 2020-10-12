@@ -3,6 +3,13 @@ import subprocess
 import twilio_connector
 import os
 import ip
+import configparser
+
+config_section = 'IMAGES'
+params = configparser.ConfigParser()
+params.read('parameters.ini')
+
+image_path = params.get(config_section, 'path')
 
 
 def get_disk_space():
@@ -26,7 +33,8 @@ def image_count(path):
 
 def main():
     twilio_connector.send_whatsapp(
-        '[IP] ' + ip.ip() + ' [Disk] ' + get_disk_space() + ' [Images] ' + str(image_count('images')) + '/' + path_size('images'))
+        '[IP] ' + ip.ip() + ' [Disk] ' + get_disk_space() + ' [Images] '
+        + str(image_count(image_path)) + '/' + path_size(image_path))
 
 
 if __name__ == "__main__":

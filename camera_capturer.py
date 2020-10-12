@@ -5,6 +5,13 @@ from datetime import datetime
 from pathlib import Path
 import detector
 import ip
+import configparser
+
+config_section = 'IMAGES'
+params = configparser.ConfigParser()
+params.read('parameters.ini')
+
+image_path = params.get(config_section, 'path')
 
 
 def configure_logger():
@@ -27,7 +34,7 @@ def configure_logger():
 
 
 def hierarchical_file(date):
-    path = 'images/' + date.strftime("%Y/%m/%d/%H/%M/")
+    path = image_path + date.strftime("%Y/%m/%d/%H/%M/")
     Path(path).mkdir(parents=True, exist_ok=True)
     return path + str(int(date.timestamp())) + '.jpg'
 
