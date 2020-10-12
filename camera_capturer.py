@@ -6,6 +6,7 @@ from pathlib import Path
 import detector
 import ip
 import configparser
+import sys
 
 config_section = 'IMAGES'
 params = configparser.ConfigParser()
@@ -65,6 +66,7 @@ def take_images():
                 cv2.imwrite(path, resize_image(img, no_people_scale_factor))
         else:
             log.error('No image captured')
+            sys.exit(1)
 
 
 log = configure_logger()
