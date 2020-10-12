@@ -69,10 +69,5 @@ def take_images():
 
 log = configure_logger()
 log.info('Started camera_capturer')
-while True:
-    try:
-        take_images()
-    except Exception as e:
-        logging.error(e.message)
-    time.sleep(10)
+take_images()
 log.info('End camera-capturer')
