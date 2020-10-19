@@ -1,20 +1,22 @@
 import shutil
 import subprocess
-import twilio_connector
+import gmail_connector
 import os
-import ip
 import configparser
+from time import time
 
-config_section = 'IMAGES'
+config_section = 'STORAGE'
 params = configparser.ConfigParser()
 params.read('parameters.ini')
 
 image_path = params.get(config_section, 'path')
+delete_delay_detection = params.getint(config_section, 'delay_detection')
+delete_delay_no_detection = params.getint(config_section, 'delay_no_detection')
 
 
 def get_disk_space():
     total, used, free = shutil.disk_usage(image_path)
-    return str(free // (2**30)) + 'GB/' + str(total // (2**30)) + 'GB'
+    return str(free // (2**30)) + 'GB von ' + str(total // (2**30)) + 'GB'
 
 
 def path_size(path):
@@ -31,11 +33,41 @@ def image_count(path):
     return count
 
 
+def delete_old_files(path, delay):
+    print(path)
+    new_path, directories, files = next(os.walk(path))
+    for file in files:
+        age = time() - float(os.path.getmtime(path + '/' + file))
+        age = age/3600/24
+        if file.endswith('.jpg') and age > delay:
+            os.remove(path + '/' + file)
+    for directory in directories:
+        delete_old_files(path + '/' + directory, delay)
+
+
+def latest_image(path):
+    new_path, directories, files = next(os.walk(path))
+    latest_time = 0
+    latest_image_path = None
+    for file in files:
+        if file.endswith('.jpg') and float(os.path.getmtime(path + '/' + file)) > latest_time:
+            latest_time = float(os.path.getmtime(path + '/' + file))
+            latest_image_path = path + '/' + file
+    for directory in directories:
+        directory_latest_time, directory_latest_image_path = latest_image(path + '/' + directory)
+        if directory_latest_time > latest_time:
+            latest_time = directory_latest_time
+            latest_image_path = directory_latest_image_path
+    return latest_time, latest_image_path
+
+
 def main():
-    twilio_connector.send_whatsapp(
-        'Your ' + ip.ip() + ' order of ' + get_disk_space()
-        + ' has shipped and should be delivered on '
-        + str(image_count(image_path)) + '. Details: ' + path_size(image_path))
+    delete_old_files(image_path + 'detection/', delete_delay_detection)
+    delete_old_files(image_path + 'no_detection/', delete_delay_no_detection)
+    current = latest_image(image_path)[1]
+    print(current)
+    content = 'Fahrstuhl Update: ' + get_disk_space() + ' frei bei ' + str(image_count(image_path)) + ' Bildern'
+    gmail_connector.send_mail(content, current)
 
 
 if __name__ == "__main__":

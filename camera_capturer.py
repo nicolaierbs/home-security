@@ -4,18 +4,17 @@ import time
 from datetime import datetime
 from pathlib import Path
 import detector
-import ip
 import configparser
 import sys
 import random
 
-config_section = 'IMAGES'
 params = configparser.ConfigParser()
 params.read('parameters.ini')
 
-image_path = params.get(config_section, 'path')
-no_people_scale_factor = params.getfloat(config_section, 'no_people_scale_factor')
-people_scale_factor = params.getfloat(config_section, 'people_scale_factor')
+image_path = params.get('STORAGE', 'path')
+no_people_scale_factor = params.getfloat('IMAGES', 'no_people_scale_factor')
+people_scale_factor = params.getfloat('IMAGES', 'people_scale_factor')
+sleep_time = params.getint('IMAGES', 'sleep')
 
 
 def configure_logger():
@@ -37,8 +36,11 @@ def configure_logger():
     return logger
 
 
-def hierarchical_file(date):
-    path = image_path + date.strftime("%Y/%m/%d/%H/%M/")
+def hierarchical_file(date, detection=False):
+    if detection:
+        path = image_path + 'detection/' + date.strftime("%Y/%m/%d/%H/")
+    else:
+        path = image_path + 'no_detection/' + date.strftime("%Y/%m/%d/%H/")
     Path(path).mkdir(parents=True, exist_ok=True)
     return path + str(int(date.timestamp())) + '.jpg'
 
@@ -56,15 +58,14 @@ def take_images():
     captured = True
     while captured:
         captured, img = cam.read()
-        time.sleep(2)
+        time.sleep(sleep_time)
         if captured:
             log.debug('Image captured')
-            path = hierarchical_file(datetime.now())
             if detector.detect_faces(img) or detector.detect_people(img):
                 log.info('Detected people')
-                cv2.imwrite(path, resize_image(img, people_scale_factor))
+                cv2.imwrite(hierarchical_file(datetime.now(), detection=True), resize_image(img, people_scale_factor))
             elif random.random() > 0.5:
-                cv2.imwrite(path, resize_image(img, no_people_scale_factor))
+                cv2.imwrite(hierarchical_file(datetime.now(), detection=False), resize_image(img, no_people_scale_factor))
         else:
             log.error('No image captured')
             sys.exit(1)
