@@ -34,7 +34,6 @@ def image_count(path):
 
 
 def delete_old_files(path, delay):
-    print(path)
     new_path, directories, files = next(os.walk(path))
     for file in files:
         age = time() - float(os.path.getmtime(path + '/' + file))
@@ -64,10 +63,10 @@ def latest_image(path):
 def main():
     delete_old_files(image_path + 'detection/', delete_delay_detection)
     delete_old_files(image_path + 'no_detection/', delete_delay_no_detection)
-    current = latest_image(image_path)[1]
-    print(current)
-    content = 'Fahrstuhl Update: ' + get_disk_space() + ' frei bei ' + str(image_count(image_path)) + ' Bildern'
-    gmail_connector.send_mail(content, current)
+    current = latest_image(image_path)
+    content = 'Fahrstuhl Update: ' + get_disk_space() + ' frei bei ' + str(image_count(image_path))\
+              + ' Bildern (letztes Bild um ' + current[0] + ')'
+    gmail_connector.send_mail(content, current[1])
 
 
 if __name__ == "__main__":
