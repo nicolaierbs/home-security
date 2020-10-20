@@ -4,6 +4,7 @@ import gmail_connector
 import os
 import configparser
 from time import time
+from datetime import datetime
 
 config_section = 'STORAGE'
 params = configparser.ConfigParser()
@@ -64,8 +65,9 @@ def main():
     delete_old_files(image_path + 'detection/', delete_delay_detection)
     delete_old_files(image_path + 'no_detection/', delete_delay_no_detection)
     current = latest_image(image_path)
+    last_image_timestamp = datetime.fromtimestamp(int(current[0])).strftime('%d.%m. %H:%M')
     content = 'Fahrstuhl Update: ' + get_disk_space() + ' frei bei ' + str(image_count(image_path))\
-              + ' Bildern (letztes Bild um ' + current[0] + ')'
+              + ' Bildern (letztes Bild um ' + last_image_timestamp + ')'
     gmail_connector.send_mail(content, current[1])
 
 
