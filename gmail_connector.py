@@ -24,7 +24,7 @@ def send_mail(content, image_path):
     msg.preamble = 'Fahrstuhlkamera'
 
     with open(image_path, 'rb') as fp:
-        img = MIMEImage(fp.read())
+        img = MIMEImage(fp.read(), _subtype='jpg')
         msg.attach(img)
 
     session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
