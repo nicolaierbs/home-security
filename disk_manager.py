@@ -65,6 +65,7 @@ def main():
     delete_old_files(image_path + 'detection/', delete_delay_detection)
     delete_old_files(image_path + 'no_detection/', delete_delay_no_detection)
     current = latest_image(image_path)
+    print(current[1])
     last_image_timestamp = datetime.fromtimestamp(int(current[0])).strftime('%d.%m. %H:%M')
     content = 'Fahrstuhl Update: ' + get_disk_space() + ' frei bei ' + str(image_count(image_path))\
               + ' Bildern (letztes Bild um ' + last_image_timestamp + ')'
