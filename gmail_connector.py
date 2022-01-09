@@ -62,10 +62,6 @@ def send_mail(parameters, image_path):
         img = MIMEImage(fp.read(), subtype='jpg')
         msg.attach(img)
 
-    with open('debug.log', 'rb') as fp:
-        img = MIMEImage(fp.read(), subtype='tex')
-        msg.attach(img)
-
     logs = open('debug.log', 'rb')
     msg.attach(MIMEText(logs.read()))
     logs.close()
