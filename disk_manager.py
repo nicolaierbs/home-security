@@ -5,6 +5,7 @@ import os
 import configparser
 from time import time
 from datetime import datetime
+from gpiozero import CPUTemperature
 
 config_section = 'STORAGE'
 params = configparser.ConfigParser()
@@ -70,9 +71,17 @@ def main():
         last_line = f.readlines()[-1]
 
     last_image_timestamp = datetime.fromtimestamp(int(current[0])).strftime('%d.%m. %H:%M')
-    content = 'Fahrstuhl Update: ' + get_disk_space() + ' frei bei ' + str(image_count(image_path))\
-              + ' Bildern (letztes Bild am ' + last_image_timestamp + ') - ' + last_line
+    cpu = CPUTemperature()
+
+    content = dict()
+    content['Stores images'] = image_count(image_path)
+    content['Free disk space'] = get_disk_space()
+    content['Last image date'] = last_image_timestamp
+    content['Last log'] = last_line
+    content['CPU temperature'] = cpu.temperature
+
     gmail_connector.send_mail(content, current[1])
+
     os.remove('debug.log')
 
 
