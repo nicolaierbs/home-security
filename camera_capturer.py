@@ -22,7 +22,7 @@ def configure_logger():
     logger = logging.getLogger('standard_logger')
     logger.setLevel(logging.DEBUG)
     # create file handler which logs even debug messages
-    fh = RotatingFileHandler('debug.log', maxBytes=1024*1024, backupCount=5)
+    fh = RotatingFileHandler('debug.log', maxBytes=1024*512, backupCount=5)
     fh.setLevel(logging.DEBUG)
     # create console handler with a higher log level
     ch = logging.StreamHandler()
