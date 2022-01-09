@@ -55,10 +55,8 @@ def send_mail(parameters, image_path):
     msg['To'] = recipients
     msg.preamble = 'Fahrstuhlkamera'
 
-    part1 = MIMEText(str(parameters), 'plain')
-    part2 = MIMEText(create_body(parameters), 'html')
-    msg.attach(part1)
-    msg.attach(part2)
+    content = MIMEText(create_body(parameters), 'html')
+    msg.attach(content)
 
     with open(image_path, 'rb') as fp:
         img = MIMEImage(fp.read(), subtype='jpg')

@@ -18,7 +18,7 @@ delete_delay_no_detection = params.getint(config_section, 'delay_no_detection')
 
 def get_disk_space():
     total, used, free = shutil.disk_usage(image_path)
-    return str(free // (2**30)) + 'GB von ' + str(total // (2**30)) + 'GB'
+    return str(free // (2**30)) + 'GB', str(total // (2**30)) + 'GB'
 
 
 def path_size(path):
@@ -72,10 +72,12 @@ def main():
 
     last_image_timestamp = datetime.fromtimestamp(int(current[0])).strftime('%d.%m. %H:%M')
     cpu = CPUTemperature()
+    disk_space = get_disk_space()
 
     content = dict()
-    content['Stores images'] = image_count(image_path)
-    content['Free disk space'] = get_disk_space()
+    content['Stored images'] = image_count(image_path)
+    content['Free disk space'] = disk_space[0]
+    content['Total disk space'] = disk_space[1]
     content['Last image date'] = last_image_timestamp
     content['Last log'] = last_line
     content['CPU temperature'] = cpu.temperature
