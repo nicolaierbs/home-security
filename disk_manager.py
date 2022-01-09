@@ -84,8 +84,6 @@ def main():
 
     gmail_connector.send_mail(content, current[1])
 
-    os.remove('debug.log')
-
 
 if __name__ == "__main__":
     main()
