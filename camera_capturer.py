@@ -1,5 +1,6 @@
 import cv2
 import logging
+from logging.handlers import RotatingFileHandler
 import time
 from datetime import datetime
 from pathlib import Path
@@ -21,7 +22,7 @@ def configure_logger():
     logger = logging.getLogger('standard_logger')
     logger.setLevel(logging.DEBUG)
     # create file handler which logs even debug messages
-    fh = logging.handlers.RotatingFileHandler('debug.log', maxBytes=1024*1024, backupCount=5)
+    fh = RotatingFileHandler('debug.log', maxBytes=1024*1024, backupCount=5)
     fh.setLevel(logging.DEBUG)
     # create console handler with a higher log level
     ch = logging.StreamHandler()
