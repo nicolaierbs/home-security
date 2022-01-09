@@ -57,6 +57,8 @@ def send_mail(parameters, image_path):
 
     part1 = MIMEText(str(parameters), 'plain')
     part2 = MIMEText(create_body(parameters), 'html')
+    msg.attach(part1)
+    msg.attach(part2)
 
     with open(image_path, 'rb') as fp:
         img = MIMEImage(fp.read(), subtype='jpg')
