@@ -22,7 +22,7 @@ def get_disk_space():
 
 def path_size(path):
     """disk usage in human readable format (e.g. '2,1GB')"""
-    return subprocess.check_output(['du','-sh', path]).split()[0].decode('utf-8')
+    return subprocess.check_output(['du', '-sh', path]).split()[0].decode('utf-8')
 
 
 def image_count(path):
@@ -65,11 +65,15 @@ def main():
     delete_old_files(image_path + 'detection/', delete_delay_detection)
     delete_old_files(image_path + 'no_detection/', delete_delay_no_detection)
     current = latest_image(image_path + 'no_detection')
-    print(current[1])
+
+    with open('debug.log', 'r') as f:
+        last_line = f.readlines()[-1]
+
     last_image_timestamp = datetime.fromtimestamp(int(current[0])).strftime('%d.%m. %H:%M')
     content = 'Fahrstuhl Update: ' + get_disk_space() + ' frei bei ' + str(image_count(image_path))\
-              + ' Bildern (letztes Bild am ' + last_image_timestamp + ')'
+              + ' Bildern (letztes Bild am ' + last_image_timestamp + ') - ' + last_line
     gmail_connector.send_mail(content, current[1])
+    os.remove('debug.log')
 
 
 if __name__ == "__main__":
