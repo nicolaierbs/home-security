@@ -62,8 +62,10 @@ def send_mail(parameters, image_path):
         img = MIMEImage(fp.read(), subtype='jpg')
         msg.attach(img)
 
-    msg.attach(MIMEText(open('debug.log').read()))
-    
+    attachment = MIMEText(open('debug.log').read())
+    attachment.add_header('Content-Disposition', 'attachment', filename='debug.log')
+    msg.attach(attachment)
+
     session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
     session.starttls()  # enable security
     session.login(user, password)  # login with mail_id and password
