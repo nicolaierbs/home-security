@@ -23,7 +23,7 @@ def configure_logger():
     logger.setLevel(logging.DEBUG)
     # create file handler which logs even debug messages
     fh = RotatingFileHandler('debug.log', maxBytes=1024*512, backupCount=5)
-    fh.setLevel(logging.DEBUG)
+    # fh.setLevel(logging.DEBUG)
     # create console handler with a higher log level
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
@@ -61,7 +61,7 @@ def take_images():
         captured, img = cam.read()
         time.sleep(sleep_time)
         if captured:
-            log.debug('Image captured')
+            # log.debug('Image captured')
             if detector.detect_faces(img) or detector.detect_people(img):
                 log.info('Detected people')
                 cv2.imwrite(hierarchical_file(datetime.now(), detection=True), resize_image(img, people_scale_factor))
