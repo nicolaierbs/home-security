@@ -73,3 +73,19 @@ def send_mail(parameters, image_path):
     session.sendmail(user, recipients.split(","), msg.as_string())
     session.quit()
 
+
+msg = MIMEMultipart()
+msg['Subject'] = 'Fahrstuhl Update'
+msg['From'] = sender
+msg['To'] = recipients
+msg.preamble = 'Fahrstuhlkamera'
+
+content = MIMEText('create_body(parameters)', 'text')
+# msg.attach(content)
+
+session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
+session.starttls()  # enable security
+session.login(user, password)  # login with mail_id and password
+
+session.sendmail(user, recipients.split(","), msg.as_string())
+session.quit()
